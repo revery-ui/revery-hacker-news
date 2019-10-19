@@ -1,0 +1,19 @@
+(executable
+    (name App)
+    (package App)
+    (js_of_ocaml (javascript_files stubs.js))
+    (public_name App)
+    (preprocess (pps lwt_ppx ppx_deriving_yojson))
+    (libraries
+        Revery
+        Revery.lwt
+        bigarray
+        fetch-native-lwt
+        ppx_deriving_yojson.runtime
+        yojson
+))
+
+(install
+    (section bin)
+    (package AppJs)
+    (files App.bc.js))
