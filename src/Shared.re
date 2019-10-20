@@ -1,5 +1,5 @@
 module Router = {
-  type route =
+  type t =
     | Top
     | New
     | Show
@@ -17,5 +17,15 @@ module Post = {
     votes: int,
     time: int,
     numberOfComments: option(int),
+  };
+};
+
+module Comment = {
+  [@deriving yojson({strict: false})]
+  type t = {
+    id: int,
+    text: string,
+    by: string,
+    time: int,
   };
 };

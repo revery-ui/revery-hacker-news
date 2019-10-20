@@ -7,9 +7,7 @@
     "build": "dune build -p App",
     "buildDev": "refmterr dune build -p App",
     "buildsInSource": "_build",
-    "install": [
-      "esy-installer App.install"
-    ]
+    "install": [ "esy-installer App.install" ]
   },
   "scripts": {
     "format": "esy dune build @fmt --auto-promote",
@@ -20,35 +18,24 @@
     "bundleId": "com.hackernews.revery",
     "displayName": "Revery Hackernews",
     "mainExecutable": "App",
-    "windows": {
-      "packages": [
-        "zip"
-      ],
-      "iconFile": "assets/icon.ico"
-    },
+    "windows": { "packages": [ "zip" ], "iconFile": "assets/icon.ico" },
     "darwin": {
-      "packages": [
-        "tar",
-        "dmg"
-      ],
+      "packages": [ "tar", "dmg" ],
       "iconFile": "assets/icon.icns"
     },
-    "linux": {
-      "packages": [
-        "tar",
-        "appimage"
-      ]
-    }
+    "linux": { "packages": [ "tar", "appimage" ] }
   },
   "dependencies": {
     "@opam/dune": ">1.11.0",
     "@opam/lwt_ppx": "*",
     "@opam/ppx_deriving_yojson": "3.5.1",
     "@opam/reason": "*",
+    "@opam/tablecloth-native": "0.0.6",
     "@opam/yojson": "1.7.0",
-    "fetch-native-lwt": "github:lessp/reason-fetch:fetch-native-lwt.json#010acd4",
+    "fetch-native-lwt":
+      "github:lessp/reason-fetch:fetch-native-lwt.json#010acd4",
     "ocaml": "~4.7.0",
-    "revery": "0.27.0"
+    "revery": "*"
   },
   "devDependencies": {
     "@opam/merlin": "*",
@@ -57,17 +44,18 @@
     "refmterr": "^3.2.2"
   },
   "resolutions": {
+    "revery": "github:revery-ui/revery#b68f0dd",
     "@brisk/brisk-reconciler": "github:briskml/brisk-reconciler#dd933fc",
     "@opam/cmdliner": "1.0.2",
-    "@opam/httpaf": "anmonteiro/httpaf:httpaf.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
-    "@opam/httpaf-lwt": "anmonteiro/httpaf:httpaf-lwt.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
-    "@opam/httpaf-lwt-unix": "anmonteiro/httpaf:httpaf-lwt-unix.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
-    "@opam/js_of_ocaml": "github:ocsigen/js_of_ocaml:js_of_ocaml.opam#db257ce",
-    "@opam/js_of_ocaml-compiler": "github:ocsigen/js_of_ocaml:js_of_ocaml-compiler.opam#db257ce",
+    "@opam/httpaf":
+      "anmonteiro/httpaf:httpaf.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
+    "@opam/httpaf-lwt":
+      "anmonteiro/httpaf:httpaf-lwt.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
+    "@opam/httpaf-lwt-unix":
+      "anmonteiro/httpaf:httpaf-lwt-unix.opam#76b461bed081c64908fb1fdfa076ab2c936ca622",
     "@opam/merlin-extend": "0.4",
-    "@opam/reason": "let-def/reason:reason.opam#bd07255b6674c3dfae8edb037b6865f8490abaff",
-    "pesy": "0.4.1",
-    "rebez": "github:jchavarri/rebez#46cbc183"
+    "@opam/reason":
+      "let-def/reason:reason.opam#bd07255b6674c3dfae8edb037b6865f8490abaff",
+    "pesy": "0.4.1"
   }
 }
-

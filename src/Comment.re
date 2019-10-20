@@ -43,46 +43,24 @@ module Styles = {
 
 let component = React.component("Hackernews_Post");
 
-let make = (~post: Shared.Post.t, ~setRoute, ()) =>
+let make = (~comment: Shared.Comment.t, ~setRoute, ()) =>
   component(hooks => {
-    let handleOpenUrl =
-      fun
-      | Some(url) => Sys.command("open " ++ url) |> ignore
-      | _ => ();
-
     let subcontentText =
-      "by "
-      ++ post.author
-      ++ " "
-      ++ string_of_int(post.time)
-      ++ (
-        switch (post.numberOfComments) {
-        | None => ""
-        | Some(count) => " | " ++ string_of_int(count) ++ " comments"
-        }
-      );
-
-    let url = post.url |> Tablecloth.Option.withDefault(~default="");
+      "by " ++ comment.by ++ " " ++ string_of_int(comment.time);
 
     (
       hooks,
       <View style=Styles.view>
-        <Text style=Styles.numberOfVotes text={string_of_int(post.votes)} />
         <View style=Styles.contentContainer>
           <View style=Styles.contentTitleContainer>
-            <Text style=Styles.content text={post.title} />
-            <Clickable onClick={_ => handleOpenUrl(post.url)}>
-              <Text style=Styles.contentTitleURL text=url />
-            </Clickable>
+            <Text style=Styles.content text={comment.text} />
           </View>
-          <Clickable
-            onClick={_ => setRoute(Shared.Router.Comments(post.id))}>
-            <Text style=Styles.subcontent text=subcontentText />
-          </Clickable>
+          <Text style=Styles.subcontent text=subcontentText />
         </View>
       </View>,
     );
   });
 
-let createElement = (~children as _, ~post: Shared.Post.t, ~setRoute, ()) =>
-  make(~post, ~setRoute, ());
+let createElement =
+    (~children as _, ~comment: Shared.Comment.t, ~setRoute, ()) =>
+  make(~comment, ~setRoute, ());

@@ -81,7 +81,10 @@ let make = (~route, ~setRoute, ()) =>
       switch (state) {
       | Idle => <Elements.Loader text="Waiting for user input..." />
       | Loading => <Elements.Loader text="Loading..." />
-      | Posts(posts) => <View> ...{postsToElements(posts)} </View>
+      | Posts(posts) =>
+        <ScrollView style=Style.[height(796)]>
+          ...{postsToElements(posts)}
+        </ScrollView>
       },
     );
   });

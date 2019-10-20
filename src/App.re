@@ -2,22 +2,47 @@ open Revery;
 open Revery.UI;
 open Revery.UI.Components;
 
+type action =
+  | ChangeRoute(Shared.Router.t);
+
 module Hackernews = {
   let component = React.component("Hackernews");
 
   let make = () =>
     component(hooks => {
-      let (route, setRoute, hooks) = Hooks.state(Shared.Router.Top, hooks);
+      let (route, dispatch, hooks) =
+        Hooks.reducer(
+          ~initialState=Shared.Router.Top,
+          (action, _state) =>
+            switch (action) {
+            | ChangeRoute(newRoute) => newRoute
+            },
+          hooks,
+        );
+
+      let setRoute = route => dispatch(ChangeRoute(route));
+
+      let currentView =
+        switch (route) {
+        | Comments(id) =>
+          Console.log(("ShouldRenderComments", id));
+          ("Comments", <PostComments postId=id setRoute />);
+        | Top
+        | Ask
+        | New
+        | Jobs
+        | Show =>
+          Console.log("ShouldRenderPosts");
+          ("Posts", <Posts route setRoute />);
+        };
+
+      Console.log(("CurrentView", fst(currentView)));
+
       (
         hooks,
         <View>
           <Elements.Header setRoute currentRoute=route />
-          {switch (route) {
-           | Comments(id) =>
-             Console.log(("CanShowCommentsFor", id));
-             <View />;
-           | _ => <Posts route setRoute />
-           }}
+          {snd(currentView)}
         </View>,
       );
     });

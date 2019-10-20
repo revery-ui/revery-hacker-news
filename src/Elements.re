@@ -72,6 +72,7 @@ module Header = {
   module Styles = {
     let container =
       Style.[
+        height(48),
         flexDirection(`Row),
         alignItems(`Center),
         backgroundColor(Theme.currentTheme.contents.contrastColor),
