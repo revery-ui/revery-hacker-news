@@ -52,7 +52,15 @@ let make = (~comment: Shared.Comment.t, ~setRoute, ()) =>
       <View style=Styles.view>
         <View style=Styles.contentContainer>
           <View style=Styles.contentTitleContainer>
-            <Text style=Styles.content text={comment.text} />
+            <Text
+              style=Styles.content
+              text={
+                comment.text
+                |> Soup.parse
+                /* |> Soup.(iter(pre => pre $ "+ p" |> clear)) */
+                |> Soup.to_string
+              }
+            />
           </View>
           <Text style=Styles.subcontent text=subcontentText />
         </View>

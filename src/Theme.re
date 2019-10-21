@@ -19,8 +19,8 @@ let regular = () => {
 };
 
 let dark = () => {
-  overallBackgroundColor: Colors.black,
-  postBackgroundColor: Color.hex("#111111"),
+  overallBackgroundColor: Color.hex("#222222"),
+  postBackgroundColor: Color.hex("#444444"),
   postTextColor: Colors.white,
   postTextQuietColor: Color.hex("#dddddd"),
   contrastColor: Color.hex("#ef6f19"),

@@ -24,18 +24,16 @@ module Hackernews = {
       let currentView =
         switch (route) {
         | Comments(id) =>
-          Console.log(("ShouldRenderComments", id));
-          ("Comments", <PostComments postId=id setRoute />);
+          /* <PostComments postId=id setRoute /> */
+          <Posts route postId={Some(id)} setRoute />
         | Top
         | Ask
         | New
         | Jobs
         | Show =>
           Console.log("ShouldRenderPosts");
-          ("Posts", <Posts route setRoute />);
+          <Posts route postId=None setRoute />;
         };
-
-      Console.log(("CurrentView", fst(currentView)));
 
       (
         hooks,
@@ -59,7 +57,7 @@ module Hackernews = {
               justifyContent(`Center),
               overflow(`Scroll),
             ]>
-            {snd(currentView)}
+            currentView
           </View>
         </View>,
       );

@@ -8,6 +8,7 @@
         Revery
         Revery.lwt
         bigarray
+        lambdasoup
         fetch-native-lwt
         ppx_deriving_yojson.runtime
         uri

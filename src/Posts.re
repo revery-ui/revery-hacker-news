@@ -22,7 +22,7 @@ let reducer = (action, _state): state => {
 
 let component = React.component("Hackernews_Posts");
 
-let make = (~route, ~setRoute, ()) =>
+let make = (~route, ~setRoute, ~postId, ()) =>
   component(hooks => {
     let (state, dispatch, hooks) =
       Hooks.reducer(~initialState=Idle, reducer, hooks);
@@ -73,21 +73,24 @@ let make = (~route, ~setRoute, ()) =>
         hooks,
       );
 
-    let postsToElements = posts =>
-      posts |> Tablecloth.List.map(~f=post => <Post post setRoute />);
-
     (
       hooks,
-      switch (state) {
-      | Idle => <Elements.Loader text="Waiting for user input..." />
-      | Loading => <Elements.Loader text="Loading..." />
-      | Posts(posts) =>
-        <View style=Style.[alignSelf(`Stretch)]>
-          ...{postsToElements(posts)}
-        </View>
+      switch (postId) {
+      | Some(id) => <PostComments postId=id setRoute />
+      | _ =>
+        switch (state) {
+        | Idle => <Elements.Loader text="Waiting for user input..." />
+        | Loading => <Elements.Loader text="Loading..." />
+        | Posts(posts) =>
+          <View style=Style.[alignSelf(`Stretch)]>
+            ...{
+                 posts |> Tablecloth.List.map(~f=post => <Post post setRoute />)
+               }
+          </View>
+        }
       },
     );
   });
 
-let createElement = (~children as _, ~route, ~setRoute, ()) =>
-  make(~route, ~setRoute, ());
+let createElement = (~children as _, ~route, ~setRoute, ~postId, ()) =>
+  make(~route, ~setRoute, ~postId, ());

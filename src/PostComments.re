@@ -47,7 +47,7 @@ let make = (~postId, ~setRoute, ()) =>
              }
            | _ => [],
          )
-      |> Lwt.map(Utils.List.take(10))
+      |> Lwt.map(Utils.List.take(5))
       |> Lwt.map(ids => {
            let%lwt comments =
              ids
@@ -96,16 +96,23 @@ let make = (~postId, ~setRoute, ()) =>
         hooks,
       );
 
-    let commentsToElements = comments =>
-      comments |> List.map(comment => <Comment comment setRoute />);
-
     (
       hooks,
-      switch (state) {
-      | Idle => <Elements.Loader text="Waiting for user input..." />
-      | Loading => <Elements.Loader text="Loading..." />
-      | Data(comments) => <View> ...{commentsToElements(comments)} </View>
-      },
+      <View style=Style.[alignSelf(`Stretch), alignItems(`Stretch)]>
+        <Elements.Link
+          text="Back"
+          onClick={_ => setRoute(Shared.Router.Top)}
+          active=true
+        />
+        {switch (state) {
+         | Idle => <Elements.Loader text="Waiting for user input..." />
+         | Loading => <Elements.Loader text="Loading..." />
+         | Data(comments) =>
+           <View>
+             ...{comments |> List.map(comment => <Comment comment setRoute />)}
+           </View>
+         }}
+      </View>,
     );
   });
 
