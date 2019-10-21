@@ -1,12 +1,19 @@
 module List = {
-  let rec take = (n, xs) =>
-    switch (xs) {
+  let rec take = (numItems, someList) =>
+    switch (someList) {
     | [] => []
-    | [x, ...xs] =>
-      if (n == 1) {
-        [x];
+    | [item, ...someList] =>
+      if (numItems == 1) {
+        [item];
       } else {
-        [x, ...take(n - 1, xs)];
+        [item, ...take(numItems - 1, someList)];
       }
     };
+};
+
+module Uri = {
+  let toHost = url =>
+    Uri.of_string(url)
+    |> Uri.host
+    |> Tablecloth.Option.withDefault(~default=url);
 };

@@ -36,7 +36,7 @@ let make = (~route, ~setRoute, ()) =>
              Fetch.Response.Body.toString(body) |> Decode.Post.postIds
            | _ => [],
          )
-      |> Lwt.map(Utils.List.take(30))
+      |> Lwt.map(Utils.List.take(6))
       |> Lwt.map(ids => {
            let%lwt posts =
              ids
@@ -74,7 +74,7 @@ let make = (~route, ~setRoute, ()) =>
       );
 
     let postsToElements = posts =>
-      posts |> List.map(post => <Post post setRoute />);
+      posts |> Tablecloth.List.map(~f=post => <Post post setRoute />);
 
     (
       hooks,
@@ -82,9 +82,9 @@ let make = (~route, ~setRoute, ()) =>
       | Idle => <Elements.Loader text="Waiting for user input..." />
       | Loading => <Elements.Loader text="Loading..." />
       | Posts(posts) =>
-        <ScrollView style=Style.[height(796)]>
+        <View style=Style.[alignSelf(`Stretch)]>
           ...{postsToElements(posts)}
-        </ScrollView>
+        </View>
       },
     );
   });

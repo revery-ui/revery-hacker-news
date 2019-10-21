@@ -1,6 +1,5 @@
 open Revery;
 open Revery.UI;
-open Revery.UI.Components;
 
 module Styles = {
   let view =
@@ -13,7 +12,7 @@ module Styles = {
     Style.[
       color(Theme.currentTheme.contents.contrastColor),
       fontFamily("Roboto-Bold.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
       margin(20),
     ];
   let contentContainer = Style.[margin(10)];
@@ -22,7 +21,7 @@ module Styles = {
       backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
       color(Theme.currentTheme.contents.postTextColor),
       fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
     ];
   let contentTitleContainer = Style.[flexDirection(`Row)];
   let contentTitleURL =
@@ -31,13 +30,13 @@ module Styles = {
       backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
       color(Colors.lightSlateGray),
       fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
     ];
   let subcontent =
     Style.[
       color(Colors.lightSlateGray),
       fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
     ];
 };
 

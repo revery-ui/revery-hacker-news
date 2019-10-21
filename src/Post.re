@@ -3,41 +3,51 @@ open Revery.UI;
 open Revery.UI.Components;
 
 module Styles = {
-  let view =
+  let container = Style.[flexDirection(`Row), marginBottom(24)];
+  let numberOfVotesContainer =
     Style.[
-      flexDirection(`Row),
-      backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
-      marginBottom(1),
+      alignItems(`Center),
+      justifyContent(`Center),
+      alignItems(`Center),
+      margin(8),
+      backgroundColor(Color.rgba(0., 0., 0., 0.)),
     ];
   let numberOfVotes =
     Style.[
+      alignSelf(`Stretch),
       color(Theme.currentTheme.contents.contrastColor),
-      fontFamily("Roboto-Bold.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontFamily("Roboto-Black.ttf"),
+      fontSize(Theme.FontSize.large),
+      justifyContent(`Center),
       margin(20),
+      width(36),
     ];
-  let contentContainer = Style.[margin(10)];
   let content =
     Style.[
       backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
       color(Theme.currentTheme.contents.postTextColor),
-      fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      textWrap(TextWrapping.WhitespaceWrap),
+      fontFamily("Roboto-Black.ttf"),
+      fontSize(Theme.FontSize.large),
+      lineHeight(1.5),
     ];
-  let contentTitleContainer = Style.[flexDirection(`Row)];
+  let contentTitleContainer =
+    Style.[flexDirection(`Row), alignItems(`FlexEnd)];
   let contentTitleURL =
     Style.[
-      marginLeft(8),
+      marginBottom(2),
+      marginLeft(12),
       backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
       color(Colors.lightSlateGray),
       fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
+      lineHeight(1.5),
     ];
   let subcontent =
     Style.[
       color(Colors.lightSlateGray),
       fontFamily("Roboto-Regular.ttf"),
-      fontSize(Theme.generalFontSize),
+      fontSize(Theme.FontSize.base),
     ];
 };
 
@@ -66,20 +76,25 @@ let make = (~post: Shared.Post.t, ~setRoute, ()) =>
 
     (
       hooks,
-      <View style=Styles.view>
-        <Text style=Styles.numberOfVotes text={string_of_int(post.votes)} />
-        <View style=Styles.contentContainer>
+      <View style=Styles.container>
+        <View style=Styles.numberOfVotesContainer>
+          <Text style=Styles.numberOfVotes text={string_of_int(post.votes)} />
+        </View>
+        <Elements.Card style=Style.[width(704)]>
           <View style=Styles.contentTitleContainer>
             <Text style=Styles.content text={post.title} />
             <Clickable onClick={_ => handleOpenUrl(post.url)}>
-              <Text style=Styles.contentTitleURL text=url />
+              <Text
+                style=Styles.contentTitleURL
+                text={Utils.Uri.toHost(url)}
+              />
             </Clickable>
           </View>
           <Clickable
             onClick={_ => setRoute(Shared.Router.Comments(post.id))}>
             <Text style=Styles.subcontent text=subcontentText />
           </Clickable>
-        </View>
+        </Elements.Card>
       </View>,
     );
   });

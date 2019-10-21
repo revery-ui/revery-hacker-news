@@ -1,5 +1,5 @@
 {
-  "checksum": "af945febfb313b8a8a50e3ab1bd9b62a",
+  "checksum": "9d596f3b40dbfd92e8d2875733194082",
   "root": "revery-hacker-news@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0@d41d8cd9": {
@@ -29,10 +29,10 @@
       },
       "overrides": [],
       "dependencies": [
-        "revery@github:revery-ui/revery#b68f0dd@d41d8cd9",
+        "revery@github:lessp/revery#4775c03@d41d8cd9",
         "ocaml@4.7.1004@d41d8cd9",
         "fetch-native-lwt@github:lessp/reason-fetch:fetch-native-lwt.json#010acd4@d41d8cd9",
-        "@opam/yojson@opam:1.7.0@7056d985",
+        "@opam/yojson@opam:1.7.0@7056d985", "@opam/uri@opam:3.0.0@08fba7ee",
         "@opam/tablecloth-native@opam:0.0.6@f882577b",
         "@opam/reason@github:let-def/reason:reason.opam#bd07255b6674c3dfae8edb037b6865f8490abaff@d41d8cd9",
         "@opam/ppx_deriving_yojson@opam:3.5.1@06a1c37f",
@@ -45,13 +45,13 @@
         "@opam/merlin@opam:3.3.2@7a364181"
       ]
     },
-    "revery@github:revery-ui/revery#b68f0dd@d41d8cd9": {
-      "id": "revery@github:revery-ui/revery#b68f0dd@d41d8cd9",
+    "revery@github:lessp/revery#4775c03@d41d8cd9": {
+      "id": "revery@github:lessp/revery#4775c03@d41d8cd9",
       "name": "revery",
-      "version": "github:revery-ui/revery#b68f0dd",
+      "version": "github:lessp/revery#4775c03",
       "source": {
         "type": "install",
-        "source": [ "github:revery-ui/revery#b68f0dd" ]
+        "source": [ "github:lessp/revery#4775c03" ]
       },
       "overrides": [],
       "dependencies": [
@@ -106,7 +106,7 @@
         "refmterr@3.2.2@d41d8cd9", "@reason-native/rely@3.1.0@d41d8cd9",
         "@reason-native/console@0.0.3@d41d8cd9",
         "@opam/lwt@opam:4.4.0@0357bb8b",
-        "@opam/lambda-term@opam:2.0.2@119fb081",
+        "@opam/lambda-term@opam:2.0.1@bc36657b",
         "@opam/fpath@opam:0.7.2@45477b93", "@opam/dune@opam:1.11.4@21d66ccd",
         "@esy-ocaml/reason@3.5.2@d41d8cd9"
       ],
@@ -126,7 +126,7 @@
       "dependencies": [
         "refmterr@3.2.2@d41d8cd9", "ocaml@4.7.1004@d41d8cd9",
         "@opam/lwt_ppx@opam:1.2.4@369f3faf", "@opam/lwt@opam:4.4.0@0357bb8b",
-        "@opam/lambda-term@opam:2.0.2@119fb081",
+        "@opam/lambda-term@opam:2.0.1@bc36657b",
         "@opam/js_of_ocaml-lwt@opam:3.4.0@ce99e929",
         "@opam/js_of_ocaml-compiler@opam:3.4.0@d2f7c406",
         "@opam/js_of_ocaml@opam:3.4.0@d8a98a2c",
@@ -1819,20 +1819,20 @@
       ],
       "devDependencies": [ "ocaml@4.7.1004@d41d8cd9" ]
     },
-    "@opam/lambda-term@opam:2.0.2@119fb081": {
-      "id": "@opam/lambda-term@opam:2.0.2@119fb081",
+    "@opam/lambda-term@opam:2.0.1@bc36657b": {
+      "id": "@opam/lambda-term@opam:2.0.1@bc36657b",
       "name": "@opam/lambda-term",
-      "version": "opam:2.0.2",
+      "version": "opam:2.0.1",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/md5/46/4602aa4355705909e406513322b4b27e#md5:4602aa4355705909e406513322b4b27e",
-          "archive:https://github.com/ocaml-community/lambda-term/releases/download/2.0.2/lambda-term-2.0.2.tbz#md5:4602aa4355705909e406513322b4b27e"
+          "archive:https://opam.ocaml.org/cache/md5/4b/4b4b8480fe1280e1ed2a34ed93d16675#md5:4b4b8480fe1280e1ed2a34ed93d16675",
+          "archive:https://github.com/ocaml-community/lambda-term/releases/download/2.0.1/lambda-term-2.0.1.tbz#md5:4b4b8480fe1280e1ed2a34ed93d16675"
         ],
         "opam": {
           "name": "lambda-term",
-          "version": "2.0.2",
-          "path": "esy.lock/opam/lambda-term.2.0.2"
+          "version": "2.0.1",
+          "path": "esy.lock/opam/lambda-term.2.0.1"
         }
       },
       "overrides": [],

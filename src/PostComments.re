@@ -104,10 +104,7 @@ let make = (~postId, ~setRoute, ()) =>
       switch (state) {
       | Idle => <Elements.Loader text="Waiting for user input..." />
       | Loading => <Elements.Loader text="Loading..." />
-      | Data(comments) =>
-        <ScrollView style=Style.[height(796)]>
-          ...{commentsToElements(comments)}
-        </ScrollView>
+      | Data(comments) => <View> ...{commentsToElements(comments)} </View>
       },
     );
   });

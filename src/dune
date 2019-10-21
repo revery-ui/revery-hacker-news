@@ -10,6 +10,7 @@
         bigarray
         fetch-native-lwt
         ppx_deriving_yojson.runtime
+        uri
         yojson
         tablecloth-native
 ))

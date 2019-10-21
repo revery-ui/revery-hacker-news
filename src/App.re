@@ -1,6 +1,5 @@
 open Revery;
 open Revery.UI;
-open Revery.UI.Components;
 
 type action =
   | ChangeRoute(Shared.Router.t);
@@ -40,9 +39,28 @@ module Hackernews = {
 
       (
         hooks,
-        <View>
+        <View
+          style=Style.[
+            alignItems(`Center),
+            bottom(0),
+            flexDirection(`Column),
+            left(0),
+            position(`Absolute),
+            right(0),
+            top(0),
+          ]>
           <Elements.Header setRoute currentRoute=route />
-          {snd(currentView)}
+          <View
+            style=Style.[
+              padding(24),
+              alignSelf(`Center),
+              alignItems(`Center),
+              flexDirection(`Column),
+              justifyContent(`Center),
+              overflow(`Scroll),
+            ]>
+            {snd(currentView)}
+          </View>
         </View>,
       );
     });
@@ -58,8 +76,9 @@ let init = app => {
       app,
       ~createOptions=
         WindowCreateOptions.create(
-          ~width=1280,
-          ~height=860,
+          ~width=1216,
+          ~height=864,
+          ~decorated=false,
           ~backgroundColor=Theme.currentTheme.contents.overallBackgroundColor,
           (),
         ),
