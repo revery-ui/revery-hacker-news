@@ -20,77 +20,65 @@ let reducer = (action, _state): state => {
   };
 };
 
-let component = React.component("Hackernews_Posts");
+let%component make = (~route, ~setRoute: Shared.Router.t => unit, ~postId, ()) => {
+  let%hook (state, dispatch) = Hooks.reducer(~initialState=Idle, reducer);
 
-let make = (~route, ~setRoute, ~postId, ()) =>
-  component(hooks => {
-    let (state, dispatch, hooks) =
-      Hooks.reducer(~initialState=Idle, reducer, hooks);
+  let fetchPosts = () => {
+    dispatch(Fetch);
+    Fetch.fetch(Api.urlFromRoute(route))
+    |> Lwt.map(
+         fun
+         | Ok({Fetch.Response.body, _}) =>
+           Fetch.Response.Body.toString(body) |> Decode.Post.postIds
+         | _ => [],
+       )
+    |> Lwt.map(Utils.List.take(6))
+    |> Lwt.map(ids => {
+         let%lwt posts =
+           ids
+           |> Lwt_list.map_p(id => {
+                let%lwt post =
+                  Api.fetchItem(id) |> Lwt.map(Decode.Post.post);
+                Lwt.return(post);
+              });
+         dispatch(Data(posts));
+         Lwt.return();
+       })
+    |> ignore;
+  };
 
-    let fetchPosts = () => {
-      dispatch(Fetch);
-      Fetch.fetch(Api.urlFromRoute(route))
-      |> Lwt.map(
-           fun
-           | Ok({Fetch.Response.body, _}) =>
-             Fetch.Response.Body.toString(body) |> Decode.Post.postIds
-           | _ => [],
-         )
-      |> Lwt.map(Utils.List.take(6))
-      |> Lwt.map(ids => {
-           let%lwt posts =
-             ids
-             |> Lwt_list.map_p(id => {
-                  let%lwt post =
-                    Api.fetchItem(id) |> Lwt.map(Decode.Post.post);
-                  Lwt.return(post);
-                });
-           dispatch(Data(posts));
-           Lwt.return();
-         })
-      |> ignore;
-    };
+  let%hook () =
+    Hooks.effect(
+      OnMount,
+      () => {
+        fetchPosts();
 
-    let hooks =
-      Hooks.effect(
-        OnMount,
-        () => {
-          fetchPosts();
-
-          None;
-        },
-        hooks,
-      );
-
-    let hooks =
-      Hooks.effect(
-        If((!=), route),
-        () => {
-          fetchPosts();
-
-          None;
-        },
-        hooks,
-      );
-
-    (
-      hooks,
-      switch (postId) {
-      | Some(id) => <PostComments postId=id setRoute />
-      | _ =>
-        switch (state) {
-        | Idle => <Elements.Loader text="Waiting for user input..." />
-        | Loading => <Elements.Loader text="Loading..." />
-        | Posts(posts) =>
-          <View style=Style.[alignSelf(`Stretch)]>
-            ...{
-                 posts |> Tablecloth.List.map(~f=post => <Post post setRoute />)
-               }
-          </View>
-        }
+        None;
       },
     );
-  });
 
-let createElement = (~children as _, ~route, ~setRoute, ~postId, ()) =>
-  make(~route, ~setRoute, ~postId, ());
+  let%hook () =
+    Hooks.effect(
+      If((!=), route),
+      () => {
+        fetchPosts();
+
+        None;
+      },
+    );
+
+  switch (postId) {
+  | Some(id) => <PostComments postId=id setRoute />
+  | _ =>
+    switch (state) {
+    | Idle => <Elements.Loader text="Waiting for user input..." />
+    | Loading => <Elements.Loader text="Loading..." />
+    | Posts(posts) =>
+      <View style=Style.[alignSelf(`Stretch)]>
+        {posts
+         |> Tablecloth.List.map(~f=post => <Post post setRoute />)
+         |> React.listToElement}
+      </View>
+    }
+  };
+};

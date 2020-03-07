@@ -5,70 +5,57 @@ type action =
   | ChangeRoute(Shared.Router.t);
 
 module Hackernews = {
-  let component = React.component("Hackernews");
-
-  let make = () =>
-    component(hooks => {
-      let (route, dispatch, hooks) =
-        Hooks.reducer(
-          ~initialState=Shared.Router.Top,
-          (action, _state) =>
-            switch (action) {
-            | ChangeRoute(newRoute) => newRoute
-            },
-          hooks,
-        );
-
-      let setRoute = route => dispatch(ChangeRoute(route));
-
-      let currentView =
-        switch (route) {
-        | Comments(id) =>
-          /* <PostComments postId=id setRoute /> */
-          <Posts route postId={Some(id)} setRoute />
-        | Top
-        | Ask
-        | New
-        | Jobs
-        | Show =>
-          Console.log("ShouldRenderPosts");
-          <Posts route postId=None setRoute />;
-        };
-
-      (
-        hooks,
-        <View
-          style=Style.[
-            alignItems(`Center),
-            bottom(0),
-            flexDirection(`Column),
-            left(0),
-            position(`Absolute),
-            right(0),
-            top(0),
-          ]>
-          <Elements.Header setRoute currentRoute=route />
-          <View
-            style=Style.[
-              padding(24),
-              alignSelf(`Center),
-              alignItems(`Center),
-              flexDirection(`Column),
-              justifyContent(`Center),
-              overflow(`Scroll),
-            ]>
-            currentView
-          </View>
-        </View>,
+  let%component make = () => {
+    let%hook (route, dispatch) =
+      Hooks.reducer(~initialState=Shared.Router.Top, (action, _state) =>
+        switch (action) {
+        | ChangeRoute(newRoute) => newRoute
+        }
       );
-    });
 
-  let createElement = (~children as _, ()) => make();
+    let setRoute = route => dispatch(ChangeRoute(route));
+
+    let currentView =
+      switch (route) {
+      | Comments(id) =>
+        /* <PostComments postId=id setRoute /> */
+        <Posts route postId={Some(id)} setRoute />
+      | Top
+      | Ask
+      | New
+      | Jobs
+      | Show =>
+        // Console.log("ShouldRenderPosts");
+        <Posts route postId=None setRoute />;
+      };
+
+    <View
+      style=Style.[
+        alignItems(`Center),
+        bottom(0),
+        flexDirection(`Column),
+        left(0),
+        position(`Absolute),
+        right(0),
+        top(0),
+      ]>
+      <Elements.Header setRoute currentRoute=route />
+      <View
+        style=Style.[
+          padding(24),
+          alignSelf(`Center),
+          alignItems(`Center),
+          flexDirection(`Column),
+          justifyContent(`Center),
+          overflow(`Scroll),
+        ]>
+        currentView
+      </View>
+    </View>;
+  };
 };
 
 let init = app => {
-  let _ = Revery.Log.listen((_, msg) => print_endline("LOG: " ++ msg));
-
   let win =
     App.createWindow(
       app,
@@ -76,18 +63,17 @@ let init = app => {
         WindowCreateOptions.create(
           ~width=1216,
           ~height=864,
-          ~decorated=false,
           ~backgroundColor=Theme.currentTheme.contents.overallBackgroundColor,
           (),
         ),
       "Revery Hackernews",
     );
 
-  let _ignore = Revery_Lwt.startEventLoop();
+  let _startEventLoop = Revery_Lwt.startEventLoop();
 
   let element = <Hackernews />;
 
-  let _ = UI.start(win, element);
+  let _uiStart = UI.start(win, element);
   ();
 };
 

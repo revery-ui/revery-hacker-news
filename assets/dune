@@ -1,11 +1,5 @@
 (install
-    (section bin)
-    (package App)
-    (files 
-      Roboto-Regular.ttf 
-      Roboto-Bold.ttf 
-      Roboto-BoldItalic.ttf 
-      Roboto-Black.ttf 
-      spinner.png
-      )
-)
+ (section bin)
+ (package App)
+ (files Roboto-Regular.ttf Roboto-Bold.ttf Roboto-BoldItalic.ttf
+   Roboto-Black.ttf spinner.png))

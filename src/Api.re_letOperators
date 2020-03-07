@@ -1,0 +1,52 @@
+let (let.map) = (x, f) => Lwt.map(f, x);
+let (let.flatMap) = (x, f) => Lwt.bind(x, f);
+
+let (let.flatMapOk) = (x, f) =>
+  Lwt.bind(
+    x,
+    fun
+    | Error(e) => Lwt.return(Error(e))
+    | Ok(x) => f(x),
+  );
+
+let (let.mapOk) = (x, f) =>
+  Lwt.map(
+    fun
+    | Error(e) => e
+    | Ok(x) => Ok(f(x)),
+    x,
+  );
+
+let baseURL = "https://hacker-news.firebaseio.com/v0";
+let top = baseURL ++ "/topstories.json";
+let latest = baseURL ++ "/newstories.json";
+let show = baseURL ++ "/showstories.json";
+let ask = baseURL ++ "/askstories.json";
+let jobs = baseURL ++ "/jobstories.json";
+
+let item = (id: int) => baseURL ++ "/item/" ++ string_of_int(id) ++ ".json";
+
+let urlFromRoute =
+  Shared.Router.(
+    fun
+    | Top => top
+    | New => latest
+    | Show => show
+    | Ask => ask
+    | Jobs => jobs
+    | _ => top
+  );
+
+let fetchItemIds = url => Fetch.({
+  let.flatMapOk {Response.body, _} = Fetch.get(url);
+
+  Lwt.return(Ok(Response.Body.toString(body)));
+});
+
+let fetchItemIdsFromRoute = route => route |> urlFromRoute |> fetchItemIds;
+
+let fetchItem = id => Fetch.({
+  let.flatMapOk {Response.body, _ } = get(item(id));
+
+  Lwt.return(Ok(Response.Body.toString(body)));
+});

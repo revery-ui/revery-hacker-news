@@ -26,67 +26,52 @@ module Card = {
       ];
   };
 
-  let component = React.component("Hackernews_Card");
-
   let make = (~children, ~style as customStyles=[], ()) =>
-    component(hooks =>
-      (
-        hooks,
-        <BoxShadow boxShadow=Styles.shadow>
-          <View
-            style={Style.merge(
-              ~source=Styles.container,
-              ~target=customStyles,
-            )}>
-            ...children
-          </View>
-        </BoxShadow>,
-      )
-    );
-
-  let createElement = (~children, ~style, ()) => make(~children, ~style, ());
+    <BoxShadow boxShadow=Styles.shadow>
+      <View
+        style={Style.merge(~source=Styles.container, ~target=customStyles)}>
+        children
+      </View>
+    </BoxShadow>;
 };
 
 module Loader = {
   module Styles = {
     let container = Style.[margin(32)];
+
+    let text =
+    Style.[
+      marginTop(6),
+      color(Colors.black),
+      fontFamily("Roboto-Regular.ttf"),
+      fontSize(Theme.FontSize.base),
+      lineHeight(1.5),
+    ];
   };
 
-  let component = React.component("Hackernews_Loader");
-
-  let make = (~text, ()) =>
-    component(hooks => {
-      let (rotation, hooks) =
-        Hooks.animation(
-          Animated.floatValue(0.),
-          Animated.options(
-            ~toValue=96.,
-            ~duration=Seconds(20.),
-            ~delay=Seconds(0.),
-            ~direction=`Normal,
-            ~repeat=true,
-            ~easing=Easing.ease,
-            (),
-          ),
-          hooks,
-        );
-
-      (
-        hooks,
-        <View style=Styles.container>
-          <Image
-            src="spinner.png"
-            style=Style.[
-              width(48),
-              height(48),
-              transform([Transform.Rotate(Angle.from_radians(rotation))]),
-            ]
-          />
-        </View>,
+  let%component make = (~text, ()) => {
+    let%hook (rotation, _, _) =
+      Hooks.animation(
+        Animation.(
+          animate(Time.seconds(1))
+          |> ease(Easing.ease)
+          |> repeat
+          |> tween(2., 5.)
+        ),
       );
-    });
 
-  let createElement = (~children as _, ~text, ()) => make(~text, ());
+    <View style=Styles.container>
+      <Image
+        src="spinner.png"
+        style=Style.[
+          width(48),
+          height(48),
+          transform([Transform.Rotate(Angle.from_radians(rotation))]),
+        ]
+      />
+      <Text style=Styles.text text />
+    </View>;
+  };
 };
 
 module InteractableView = {
@@ -100,55 +85,36 @@ module InteractableView = {
     | Hover
     | Active;
 
-  let component = React.component("Hackernews_Interactable");
-
-  let make =
-      (
-        ~children: list(React.syntheticElement),
-        ~hoverStyles=[],
-        ~activeStyles=[],
-        ~style=[],
-        (),
-      ) =>
-    component(hooks => {
-      let (state, dispatch, hooks) =
-        Hooks.reducer(
-          ~initialState=Idle,
-          (action, _state) =>
-            switch (action) {
-            | Idle => Idle
-            | Hover => Hover
-            | Active => Active
-            },
-          hooks,
-        );
-
-      let currentStyle =
-        switch (state) {
-        | Idle => style
-        | Hover => Style.merge(~source=style, ~target=hoverStyles)
-        | Active =>
-          Style.merge(
-            ~source=style,
-            ~target=Tablecloth.List.concat([hoverStyles, ...activeStyles]),
-          )
-        };
-
-      (
-        hooks,
-        <View
-          onMouseOut={_ => dispatch(Idle)}
-          onMouseOver={_ => dispatch(Hover)}
-          onMouseDown={_ => dispatch(Active)}
-          style=currentStyle>
-          ...children
-        </View>,
+  let%component make =
+                (~children, ~hoverStyles=[], ~activeStyles=[], ~style=[], ()) => {
+    let%hook (state, dispatch) =
+      Hooks.reducer(~initialState=Idle, (action, _state) =>
+        switch (action) {
+        | Idle => Idle
+        | Hover => Hover
+        | Active => Active
+        }
       );
-    });
 
-  let createElement =
-      (~children, ~hoverStyles=[], ~activeStyles=[], ~style=[], ()) =>
-    make(~children, ~hoverStyles, ~activeStyles, ~style, ());
+    let currentStyle =
+      switch (state) {
+      | Idle => style
+      | Hover => Style.merge(~source=style, ~target=hoverStyles)
+      | Active =>
+        Style.merge(
+          ~source=style,
+          ~target=Tablecloth.List.concat([hoverStyles, ...activeStyles]),
+        )
+      };
+
+    <View
+      onMouseOut={_ => dispatch(Idle)}
+      onMouseOver={_ => dispatch(Hover)}
+      onMouseDown={_ => dispatch(Active)}
+      style=currentStyle>
+      children
+    </View>;
+  };
 };
 
 module InteractableText = {
@@ -157,61 +123,36 @@ module InteractableText = {
     | Hover
     | Active;
 
-  type action =
-    | Idle
-    | Hover
-    | Active;
-
-  let component = React.component("Hackernews_InteractableText");
-
-  let make =
-      (
-        ~children: list(React.syntheticElement),
-        ~hoverStyles=[],
-        ~activeStyles=[],
-        ~style=[],
-        ~text,
-        (),
-      ) =>
-    component(hooks => {
-      let (state, dispatch, hooks) =
-        Hooks.reducer(
-          ~initialState=Idle,
-          (action, _state) =>
-            switch (action) {
-            | Idle => Idle
-            | Hover => Hover
-            | Active => Active
-            },
-          hooks,
-        );
-
-      let currentStyle =
-        switch (state) {
-        | Idle => style
-        | Hover => Style.merge(~source=style, ~target=hoverStyles)
-        | Active =>
-          Style.merge(
-            ~source=style,
-            ~target=Tablecloth.List.concat([hoverStyles, ...activeStyles]),
-          )
-        };
-
-      (
-        hooks,
-        <Text
-          onMouseOut={_ => dispatch(Idle)}
-          onMouseOver={_ => dispatch(Hover)}
-          onMouseDown={_ => dispatch(Active)}
-          style=currentStyle
-          text
-        />,
+  let%component make =
+                (~hoverStyles=[], ~activeStyles=[], ~style=[], ~text, ()) => {
+    let%hook (state, dispatch) =
+      Hooks.reducer(~initialState=Idle, (action, _state: state) =>
+        switch (action) {
+        | `Idle => Idle
+        | `Hover => Hover
+        | `Active => Active
+        }
       );
-    });
 
-  let createElement =
-      (~children, ~hoverStyles=[], ~activeStyles=[], ~style=[], ~text, ()) =>
-    make(~children, ~hoverStyles, ~activeStyles, ~style, ~text, ());
+    let currentStyle =
+      switch (state) {
+      | Idle => style
+      | Hover => Style.merge(~source=style, ~target=hoverStyles)
+      | Active =>
+        Style.merge(
+          ~source=style,
+          ~target=Tablecloth.List.concat([hoverStyles, ...activeStyles]),
+        )
+      };
+
+    <Text
+      onMouseOut={_ => dispatch(`Idle)}
+      onMouseOver={_ => dispatch(`Hover)}
+      onMouseDown={_ => dispatch(`Active)}
+      style=currentStyle
+      text
+    />;
+  };
 };
 module Link = {
   module Styles = {
@@ -227,24 +168,15 @@ module Link = {
         margin(12),
       ];
   };
-  let component = React.component("Hackernews_Link");
 
   let make = (~text, ~onClick, ~active, ()) =>
-    component(hooks =>
-      (
-        hooks,
-        <Clickable onClick>
-          <InteractableText
-            style={Styles.item(active)}
-            hoverStyles=Style.[color(Color.hex("#929292"))]
-            text
-          />
-        </Clickable>,
-      )
-    );
-
-  let createElement = (~children as _, ~text, ~onClick, ~active, ()) =>
-    make(~text, ~onClick, ~active, ());
+    <Clickable onClick>
+      <InteractableText
+        style={Styles.item(active)}
+        hoverStyles=Style.[color(Color.hex("#929292"))]
+        text
+      />
+    </Clickable>;
 };
 
 module Header = {
@@ -277,49 +209,42 @@ module Header = {
       ];
   };
 
-  let component = React.component("Hackernews_Header");
-
-  let make = (~setRoute, ~currentRoute, ()) =>
-    component(hooks =>
-      Shared.Router.(
-        hooks,
-        <View style=Style.[alignSelf(`Stretch), paddingBottom(12)]>
-          <BoxShadow boxShadow=Styles.shadow>
-            <View style=Styles.container>
-              <View> <Text style=Styles.logo text="Revery HN" /> </View>
-              <View style=Styles.view>
-                <Link
-                  active={currentRoute == Top}
-                  onClick={() => setRoute(Top)}
-                  text="Top"
-                />
-                <Link
-                  active={currentRoute == New}
-                  onClick={() => setRoute(New)}
-                  text="New"
-                />
-                <Link
-                  active={currentRoute == Show}
-                  onClick={() => setRoute(Show)}
-                  text="Show"
-                />
-                <Link
-                  active={currentRoute == Ask}
-                  onClick={() => setRoute(Ask)}
-                  text="Ask"
-                />
-                <Link
-                  active={currentRoute == Jobs}
-                  onClick={() => setRoute(Jobs)}
-                  text="Jobs"
-                />
-              </View>
+  let make = (~setRoute, ~currentRoute, ()) => {
+    Shared.Router.(
+      <View style=Style.[alignSelf(`Stretch), paddingBottom(12)]>
+        <BoxShadow boxShadow=Styles.shadow>
+          <View style=Styles.container>
+            <View> <Text style=Styles.logo text="Revery HN" /> </View>
+            <View style=Styles.view>
+              <Link
+                active={currentRoute == Top}
+                onClick={() => setRoute(Top)}
+                text="Top"
+              />
+              <Link
+                active={currentRoute == New}
+                onClick={() => setRoute(New)}
+                text="New"
+              />
+              <Link
+                active={currentRoute == Show}
+                onClick={() => setRoute(Show)}
+                text="Show"
+              />
+              <Link
+                active={currentRoute == Ask}
+                onClick={() => setRoute(Ask)}
+                text="Ask"
+              />
+              <Link
+                active={currentRoute == Jobs}
+                onClick={() => setRoute(Jobs)}
+                text="Jobs"
+              />
             </View>
-          </BoxShadow>
-        </View>,
-      )
+          </View>
+        </BoxShadow>
+      </View>
     );
-
-  let createElement = (~children as _, ~setRoute, ~currentRoute, ()) =>
-    make(~setRoute, ~currentRoute, ());
+  };
 };

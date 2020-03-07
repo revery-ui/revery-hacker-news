@@ -40,34 +40,25 @@ module Styles = {
     ];
 };
 
-let component = React.component("Hackernews_Post");
+let make =
+    (~comment: Shared.Comment.t, ~setRoute: Shared.Router.t => unit, ()) => {
+  let subcontentText =
+    "by " ++ comment.by ++ " " ++ string_of_int(comment.time);
 
-let make = (~comment: Shared.Comment.t, ~setRoute, ()) =>
-  component(hooks => {
-    let subcontentText =
-      "by " ++ comment.by ++ " " ++ string_of_int(comment.time);
-
-    (
-      hooks,
-      <View style=Styles.view>
-        <View style=Styles.contentContainer>
-          <View style=Styles.contentTitleContainer>
-            <Text
-              style=Styles.content
-              text={
-                comment.text
-                |> Soup.parse
-                /* |> Soup.(iter(pre => pre $ "+ p" |> clear)) */
-                |> Soup.to_string
-              }
-            />
-          </View>
-          <Text style=Styles.subcontent text=subcontentText />
-        </View>
-      </View>,
-    );
-  });
-
-let createElement =
-    (~children as _, ~comment: Shared.Comment.t, ~setRoute, ()) =>
-  make(~comment, ~setRoute, ());
+  <View style=Styles.view>
+    <View style=Styles.contentContainer>
+      <View style=Styles.contentTitleContainer>
+        <Text
+          style=Styles.content
+          text={
+            comment.text
+            |> Soup.parse
+            /* |> Soup.(iter(pre => pre $ "+ p" |> clear)) */
+            |> Soup.to_string
+          }
+        />
+      </View>
+      <Text style=Styles.subcontent text=subcontentText />
+    </View>
+  </View>;
+};

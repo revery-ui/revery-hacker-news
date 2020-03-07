@@ -26,7 +26,7 @@ module Styles = {
     Style.[
       backgroundColor(Theme.currentTheme.contents.postBackgroundColor),
       color(Theme.currentTheme.contents.postTextColor),
-      textWrap(TextWrapping.WhitespaceWrap),
+      // textWrap(TextWrapping.WhitespaceWrap),
       fontFamily("Roboto-Black.ttf"),
       fontSize(Theme.FontSize.large),
       lineHeight(1.5),
@@ -51,53 +51,40 @@ module Styles = {
     ];
 };
 
-let component = React.component("Hackernews_Post");
+let make = (~post: Shared.Post.t, ~setRoute: Shared.Router.t => unit, ()) => {
+  let handleOpenUrl =
+    fun
+    | Some(url) => Sys.command("open " ++ url) |> ignore
+    | _ => ();
 
-let make = (~post: Shared.Post.t, ~setRoute, ()) =>
-  component(hooks => {
-    let handleOpenUrl =
-      fun
-      | Some(url) => Sys.command("open " ++ url) |> ignore
-      | _ => ();
-
-    let subcontentText =
-      "by "
-      ++ post.author
-      ++ " "
-      ++ string_of_int(post.time)
-      ++ (
-        switch (post.numberOfComments) {
-        | None => ""
-        | Some(count) => " | " ++ string_of_int(count) ++ " comments"
-        }
-      );
-
-    let url = post.url |> Tablecloth.Option.withDefault(~default="");
-
-    (
-      hooks,
-      <View style=Styles.container>
-        <View style=Styles.numberOfVotesContainer>
-          <Text style=Styles.numberOfVotes text={string_of_int(post.votes)} />
-        </View>
-        <Elements.Card style=Style.[width(704)]>
-          <View style=Styles.contentTitleContainer>
-            <Text style=Styles.content text={post.title} />
-            <Clickable onClick={_ => handleOpenUrl(post.url)}>
-              <Text
-                style=Styles.contentTitleURL
-                text={Utils.Uri.toHost(url)}
-              />
-            </Clickable>
-          </View>
-          <Clickable
-            onClick={_ => setRoute(Shared.Router.Comments(post.id))}>
-            <Text style=Styles.subcontent text=subcontentText />
-          </Clickable>
-        </Elements.Card>
-      </View>,
+  let subcontentText =
+    "by "
+    ++ post.author
+    ++ " "
+    ++ string_of_int(post.time)
+    ++ (
+      switch (post.numberOfComments) {
+      | None => ""
+      | Some(count) => " | " ++ string_of_int(count) ++ " comments"
+      }
     );
-  });
 
-let createElement = (~children as _, ~post: Shared.Post.t, ~setRoute, ()) =>
-  make(~post, ~setRoute, ());
+  let url = post.url |> Tablecloth.Option.withDefault(~default="");
+
+  <View style=Styles.container>
+    <View style=Styles.numberOfVotesContainer>
+      <Text style=Styles.numberOfVotes text={string_of_int(post.votes)} />
+    </View>
+    <Elements.Card style=Style.[width(704)]>
+      <View style=Styles.contentTitleContainer>
+        <Text style=Styles.content text={post.title} />
+        <Clickable onClick={_ => handleOpenUrl(post.url)}>
+          <Text style=Styles.contentTitleURL text={Utils.Uri.toHost(url)} />
+        </Clickable>
+      </View>
+      <Clickable onClick={_ => setRoute(Shared.Router.Comments(post.id))}>
+        <Text style=Styles.subcontent text=subcontentText />
+      </Clickable>
+    </Elements.Card>
+  </View>;
+};

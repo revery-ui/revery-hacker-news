@@ -1,9 +1,11 @@
+open! Tablecloth;
+
 module Post = {
   open Yojson.Basic;
   open Yojson.Basic.Util;
 
   let postId = json => json |> to_int;
-  let postIds = json => json |> from_string |> to_list |> List.map(postId);
+  let postIds = json => json |> from_string |> to_list |> List.map(~f=postId);
 
   let post = json =>
     json

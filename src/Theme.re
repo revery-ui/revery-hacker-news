@@ -28,9 +28,9 @@ let dark = () => {
 };
 
 module FontSize = {
-  let base = 14;
-  let large = 18;
-  let extraLarge = 22;
+  let base = 14.;
+  let large = 18.;
+  let extraLarge = 22.;
 };
 
 let currentTheme = ref(regular());
